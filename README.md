@@ -1,4 +1,4 @@
-# Tap Poker
+# Easy Poker
 
 Aplicación móvil para gestionar una partida presencial de Texas Hold'em No Limit sin fichas ni botón físicos.
 

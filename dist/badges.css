@@ -1,0 +1,31 @@
+.badges {
+  top: -19px;
+  gap: 4px;
+  z-index: 3;
+}
+
+.badge {
+  width: 34px;
+  height: 34px;
+  border-width: 3px;
+  font-size: .72rem;
+  letter-spacing: -.02em;
+  font-weight: 1000;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, .38);
+}
+
+.position-tag {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 34px;
+  padding: 5px 7px;
+  border-radius: 9px;
+  background: #f2c14e;
+  color: #17211c;
+  font-size: .72rem;
+  text-align: center;
+}
+
+.player-field:has(.position-tag) .input { padding-right: 58px; }
