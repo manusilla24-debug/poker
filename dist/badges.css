@@ -71,6 +71,17 @@
   transform: translate(-50%, 0);
 }
 
+button,
+[role="button"],
+.action,
+.winner,
+.quick-bets button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .game-head {
   height: 72px;
   display: grid;
