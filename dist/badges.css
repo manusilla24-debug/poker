@@ -125,15 +125,57 @@
 
 .mini-chip,
 .chip-token {
+  position: relative;
   flex: 0 0 auto;
   display: inline-block;
   border-radius: 50%;
-  background: repeating-conic-gradient(#f2c14e 0 18deg, #17231d 18deg 31deg);
-  border: 2px solid #f2c14e;
+  background: repeating-conic-gradient(#f2c14e 0 16deg, #17231d 16deg 28deg);
+  border: 2px solid #17231d;
   box-shadow: 0 2px 7px rgba(0,0,0,.35);
+  font-style: normal;
 }
 
-.mini-chip { width: 15px; height: 15px; }
+.mini-chip::after,
+.chip-token::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: 1;
+  border: 1px solid #17231d;
+  border-radius: 50%;
+  background: #f2c14e;
+}
+
+.mini-chip::before,
+.chip-token::before {
+  content: "♠";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  color: #17231d;
+  font-family: "Segoe UI Symbol", sans-serif;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.mini-chip { width: 19px; height: 19px; }
+.mini-chip::after { inset: 3px; }
+.mini-chip::before { font-size: 7px; }
+
+.mini-chip,
+.chip-token {
+  border: 0;
+  background: #071a16 url("./chip.svg") center / cover no-repeat;
+}
+
+.mini-chip::before,
+.mini-chip::after,
+.chip-token::before,
+.chip-token::after {
+  display: none;
+}
 
 .seat-bet {
   left: 50%;
@@ -153,7 +195,8 @@
   font-size: .76rem;
 }
 
-.chip-token { width: 20px; height: 20px; }
+.chip-token { width: 27px; height: 27px; }
+.chip-token::before { font-size: 10px; }
 
 .seat-bet strong { color: #fff8df; font-weight: 900; }
 
@@ -162,5 +205,7 @@
 @media (max-width: 390px) {
   .seat { width: 96px; }
   .seat-bet { font-size: .72rem; padding-right: 7px; }
-  .chip-token { width: 18px; height: 18px; }
+  .chip-token { width: 24px; height: 24px; }
+  .chip-token::after { inset: 3px; }
+  .chip-token::before { font-size: 9px; }
 }
