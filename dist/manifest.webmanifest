@@ -1,0 +1,23 @@
+{
+  "name": "Easy Poker",
+  "short_name": "Easy Poker",
+  "description": "Mesa de Texas Hold'em para jugar sin fichas físicas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06130f",
+  "theme_color": "#071a16",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
