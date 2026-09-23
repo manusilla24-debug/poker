@@ -30,29 +30,12 @@
 
 .player-field:has(.position-tag) .input { padding-right: 58px; }
 
-.player-count-control {
-  display: grid;
-  grid-template-columns: 52px 1fr 52px;
-  align-items: center;
-  gap: 12px;
-}
-
-.count-button {
-  width: 52px;
-  height: 52px;
-  border: 1px solid rgba(255,255,255,.15);
-  border-radius: 15px;
-  background: #17392e;
-  color: #f2c14e;
-  font-size: 1.7rem;
-  font-weight: 900;
-  line-height: 1;
-}
-
 .range {
+  width: 100%;
   height: 44px;
   margin: 0;
   cursor: pointer;
+  touch-action: pan-y;
 }
 
 .range::-webkit-slider-runnable-track {
