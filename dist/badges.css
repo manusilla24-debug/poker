@@ -8,10 +8,10 @@
   width: 34px;
   height: 34px;
   border-width: 3px;
-  font-size: .72rem;
-  letter-spacing: -.02em;
+  font-size: 0.72rem;
+  letter-spacing: -0.02em;
   font-weight: 1000;
-  box-shadow: 0 5px 12px rgba(0, 0, 0, .38);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.38);
 }
 
 .position-tag {
@@ -24,11 +24,13 @@
   border-radius: 9px;
   background: #f2c14e;
   color: #17211c;
-  font-size: .72rem;
+  font-size: 0.72rem;
   text-align: center;
 }
 
-.player-field:has(.position-tag) .input { padding-right: 58px; }
+.player-field:has(.position-tag) .input {
+  padding-right: 58px;
+}
 
 .range {
   width: 100%;
@@ -41,7 +43,7 @@
 .range::-webkit-slider-runnable-track {
   height: 10px;
   border-radius: 999px;
-  background: linear-gradient(90deg,#f2c14e,#aa8a3d);
+  background: linear-gradient(90deg, #f2c14e, #aa8a3d);
 }
 
 .range::-webkit-slider-thumb {
@@ -51,13 +53,27 @@
   border: 4px solid #071a16;
   border-radius: 50%;
   background: #f2c14e;
-  box-shadow: 0 3px 12px rgba(0,0,0,.4);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
   -webkit-appearance: none;
 }
 
-.range::-moz-range-track { height: 10px; border-radius: 999px; background: #aa8a3d; }
-.range::-moz-range-progress { height: 10px; border-radius: 999px; background: #f2c14e; }
-.range::-moz-range-thumb { width: 26px; height: 26px; border: 4px solid #071a16; border-radius: 50%; background: #f2c14e; }
+.range::-moz-range-track {
+  height: 10px;
+  border-radius: 999px;
+  background: #aa8a3d;
+}
+.range::-moz-range-progress {
+  height: 10px;
+  border-radius: 999px;
+  background: #f2c14e;
+}
+.range::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border: 4px solid #071a16;
+  border-radius: 50%;
+  background: #f2c14e;
+}
 
 .toast {
   opacity: 0;
@@ -89,7 +105,7 @@ button,
   gap: 12px;
   padding: max(10px, env(safe-area-inset-top)) 14px 8px;
   background: linear-gradient(180deg, #091c16, #071610);
-  border-bottom: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .hand-meta {
@@ -103,7 +119,7 @@ button,
   color: #f5f2e8;
   font-size: 1rem;
   line-height: 1;
-  letter-spacing: -.02em;
+  letter-spacing: -0.02em;
 }
 
 .pot-card {
@@ -113,16 +129,16 @@ button,
   justify-content: center;
   align-items: flex-end;
   padding: 7px 12px;
-  border: 1px solid rgba(242,193,78,.24);
+  border: 1px solid rgba(242, 193, 78, 0.24);
   border-radius: 13px;
-  background: rgba(242,193,78,.08);
+  background: rgba(242, 193, 78, 0.08);
 }
 
 .pot-card > span {
   color: #9bb0a9;
-  font-size: .67rem;
+  font-size: 0.67rem;
   font-weight: 800;
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -142,7 +158,7 @@ button,
   border-radius: 50%;
   background: repeating-conic-gradient(#f2c14e 0 16deg, #17231d 16deg 28deg);
   border: 2px solid #17231d;
-  box-shadow: 0 2px 7px rgba(0,0,0,.35);
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.35);
   font-style: normal;
 }
 
@@ -171,9 +187,16 @@ button,
   line-height: 1;
 }
 
-.mini-chip { width: 19px; height: 19px; }
-.mini-chip::after { inset: 3px; }
-.mini-chip::before { font-size: 7px; }
+.mini-chip {
+  width: 19px;
+  height: 19px;
+}
+.mini-chip::after {
+  inset: 3px;
+}
+.mini-chip::before {
+  font-size: 7px;
+}
 
 .mini-chip,
 .chip-token {
@@ -200,23 +223,45 @@ button,
   padding: 4px 9px 4px 5px;
   transform: translate(-50%, -50%) translate(var(--bet-x), var(--bet-y));
   color: #f5f2e8;
-  background: rgba(5,20,15,.94);
-  border-color: rgba(242,193,78,.38);
-  box-shadow: 0 5px 13px rgba(0,0,0,.32);
-  font-size: .76rem;
+  background: rgba(5, 20, 15, 0.94);
+  border-color: rgba(242, 193, 78, 0.38);
+  box-shadow: 0 5px 13px rgba(0, 0, 0, 0.32);
+  font-size: 0.76rem;
 }
 
-.chip-token { width: 27px; height: 27px; }
-.chip-token::before { font-size: 10px; }
+.chip-token {
+  width: 27px;
+  height: 27px;
+}
+.chip-token::before {
+  font-size: 10px;
+}
 
-.seat-bet strong { color: #fff8df; font-weight: 900; }
+.seat-bet strong {
+  color: #fff8df;
+  font-weight: 900;
+}
 
-.table-center .instruction { color: #d2e1dc; }
+.table-center .instruction {
+  color: #d2e1dc;
+}
 
 @media (max-width: 390px) {
-  .seat { width: 96px; }
-  .seat-bet { font-size: .72rem; padding-right: 7px; }
-  .chip-token { width: 24px; height: 24px; }
-  .chip-token::after { inset: 3px; }
-  .chip-token::before { font-size: 9px; }
+  .seat {
+    width: 96px;
+  }
+  .seat-bet {
+    font-size: 0.72rem;
+    padding-right: 7px;
+  }
+  .chip-token {
+    width: 24px;
+    height: 24px;
+  }
+  .chip-token::after {
+    inset: 3px;
+  }
+  .chip-token::before {
+    font-size: 9px;
+  }
 }
