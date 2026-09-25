@@ -260,6 +260,19 @@ function boardCards() {
       `<div class="card ${i < state.board ? "" : "down"}">${i < state.board ? (i < 3 ? "F" + (i + 1) : i === 3 ? "T" : "R") : ""}</div>`,
   ).join("");
 }
+function potName(index) {
+  const names = [
+    "Principal",
+    "Secundario",
+    "Terciario",
+    "Cuaternario",
+    "Quinto",
+    "Sexto",
+    "Séptimo",
+    "Octavo",
+  ];
+  return names[index] || `Bote ${index + 1}`;
+}
 function potBreakdown() {
   if (!state.pot) return "";
   const contributed = state.players.filter((p) => p.total > 0),
@@ -285,9 +298,7 @@ function potBreakdown() {
   });
   const labels = parts
     .filter(Boolean)
-    .map(
-      (amount, i) => `<span>${i === 0 ? "Principal" : `Sec. ${i}`}: <b>${money(amount)}</b></span>`,
-    );
+    .map((amount, i) => `<span>${potName(i)}: <b>${money(amount)}</b></span>`);
   if (unmatched) labels.push(`<span>Sin igualar: <b>${money(unmatched)}</b></span>`);
   return `<div class="pot-breakdown">${labels.join("")}</div>`;
 }
@@ -339,8 +350,7 @@ function showdown() {
   if (!pot) return "";
   const eligible = pot.eligible.map((id) => state.players.find((p) => p.id === id)).filter(Boolean);
   const selected = [...state.selectedWinners];
-  const label =
-    state.currentPotIndex === 0 ? "Bote principal" : `Bote secundario ${state.currentPotIndex}`;
+  const label = `Bote ${potName(state.currentPotIndex).toLowerCase()}`;
   return `<div class="showdown"><div class="sheet"><div class="step">Showdown · Bote ${state.currentPotIndex + 1} de ${state.pots.length}</div><h2>${label}: ${money(pot.amount)} fichas</h2>${state.currentPotIndex === 0 ? `<p><strong>${esc(firstToShow().name)}</strong> enseña primero.</p>` : ""}<p>Solo estos jugadores pueden ganar este bote. Toca uno o varios si hay empate.</p><div class="winner-grid">${eligible.map((p) => `<button class="winner ${state.selectedWinners.has(p.id) ? "selected" : ""}" data-winner="${p.id}">${esc(p.name)}<br><small>${money(p.chips)} fichas</small></button>`).join("")}</div><button class="primary wide" id="awardPot" ${selected.length ? "" : "disabled"}>Entregar ${money(pot.amount)} fichas</button></div></div>`;
 }
 function firstToShow() {
@@ -445,18 +455,24 @@ function buildSidePots() {
     (a, b) => a - b,
   );
   let previous = 0;
-  return levels
-    .map((level) => {
-      const contributors = state.players.filter((p) => p.total >= level);
-      const pot = {
-        amount: (level - previous) * contributors.length,
-        eligible: contributors.filter((p) => !p.folded).map((p) => p.id),
-        contributorCount: contributors.length,
-      };
-      previous = level;
-      return pot;
-    })
-    .filter((p) => p.amount > 0);
+  const pots = [];
+  levels.forEach((level) => {
+    const contributors = state.players.filter((p) => p.total >= level);
+    const eligible = contributors
+      .filter((p) => !p.folded)
+      .map((p) => p.id)
+      .sort((a, b) => a - b);
+    const amount = (level - previous) * contributors.length;
+    const last = pots[pots.length - 1];
+    const sameEligible = last && last.eligible.join(",") === eligible.join(",");
+    if (sameEligible) {
+      last.amount += amount;
+    } else if (amount > 0) {
+      pots.push({ amount, eligible });
+    }
+    previous = level;
+  });
+  return pots;
 }
 function prepareShowdown() {
   const pots = buildSidePots(),
