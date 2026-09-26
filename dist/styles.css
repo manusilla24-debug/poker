@@ -851,6 +851,20 @@ h2 {
   gap: 10px;
   margin-bottom: 18px;
 }
+.mode-field {
+  display: grid;
+  gap: 7px;
+  margin: 18px 0 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+.mode-field .select {
+  color: var(--ink);
+}
+.auto-only[hidden] {
+  display: none;
+}
 .blind-fields label:first-child {
   grid-column: 1/-1;
 }

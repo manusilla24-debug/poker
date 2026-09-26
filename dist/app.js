@@ -27,6 +27,7 @@ const state = {
   menuOpen: false,
   blindMenu: false,
   blinds: {
+    mode: "automatic",
     enabled: false,
     minutes: 15,
     nextSb: 10,
@@ -186,12 +187,17 @@ function newHand(first = false) {
   if (state.blinds.pending) {
     state.setup.sb = state.blinds.nextSb;
     state.setup.bb = state.blinds.nextBb;
-    state.blinds.nextSb *= 2;
-    state.blinds.nextBb *= 2;
     state.blinds.pending = false;
-    state.blinds.enabled = true;
-    state.blinds.remaining = state.blinds.minutes * 60;
-    startBlindTimer();
+    if (state.blinds.mode === "automatic") {
+      state.blinds.nextSb *= 2;
+      state.blinds.nextBb *= 2;
+      state.blinds.enabled = true;
+      state.blinds.remaining = state.blinds.minutes * 60;
+      startBlindTimer();
+    } else {
+      state.blinds.enabled = false;
+      clearInterval(blindTimer);
+    }
     setTimeout(
       () => toast(`Nuevas ciegas: ${money(state.setup.sb)} / ${money(state.setup.bb)}`),
       0,
@@ -332,10 +338,16 @@ function betweenPanel() {
   return `<div class="between"><strong>Turno del ${next}</strong><span class="hint">Prepara las cartas de la siguiente ronda</span><button class="primary wide" id="continueStreet">Pulsa para continuar</button></div>`;
 }
 function menuSheet() {
-  return `<div class="showdown"><div class="sheet"><h2>Opciones de mesa</h2><p>La partida solo se mantiene mientras esta mesa está abierta.</p><button class="blind-option" id="openBlinds"><span><strong>Subir ciegas</strong><small>${state.blinds.enabled || state.blinds.pending ? clockText() : "Configurar subida automática"}</small></span><b>›</b></button><div class="summary">${state.players.map((p) => `<div class="summary-row"><span>${esc(p.name)}</span><strong>${money(p.chips)}</strong></div>`).join("")}</div><button class="secondary wide" id="closeMenu">Volver a la mesa</button><button class="danger wide" id="endGame" style="margin-top:9px">Terminar partida</button></div></div>`;
+  const blindStatus = state.blinds.pending
+    ? `${state.blinds.nextSb} / ${state.blinds.nextBb} · próxima mano`
+    : state.blinds.enabled
+      ? clockText()
+      : "Configurar modo manual o automático";
+  return `<div class="showdown"><div class="sheet"><h2>Opciones de mesa</h2><p>La partida solo se mantiene mientras esta mesa está abierta.</p><button class="blind-option" id="openBlinds"><span><strong>Subir ciegas</strong><small>${blindStatus}</small></span><b>›</b></button><div class="summary">${state.players.map((p) => `<div class="summary-row"><span>${esc(p.name)}</span><strong>${money(p.chips)}</strong></div>`).join("")}</div><button class="secondary wide" id="closeMenu">Volver a la mesa</button><button class="danger wide" id="endGame" style="margin-top:9px">Terminar partida</button></div></div>`;
 }
 function blindSheet() {
-  return `<div class="showdown"><div class="sheet"><button class="sheet-back" id="backMenu" aria-label="Volver">←</button><div class="step">Reloj de niveles</div><h2>Subida de ciegas</h2><p>Cuando termine el tiempo, las nuevas ciegas se aplicarán al comenzar la siguiente mano.</p><label class="toggle-row"><span><strong>Subida automática</strong><small>Continuará duplicando cada nivel</small></span><input id="blindEnabled" type="checkbox" ${state.blinds.enabled || state.blinds.pending ? "checked" : ""}></label><div class="blind-fields"><label>Intervalo (minutos)<input class="input" id="blindMinutes" type="number" inputmode="numeric" min="1" max="180" value="${state.blinds.minutes}"></label><label>Próxima SB<input class="input" id="nextSb" type="number" inputmode="numeric" min="1" value="${state.blinds.nextSb}"></label><label>Próxima BB<input class="input" id="nextBb" type="number" inputmode="numeric" min="2" value="${state.blinds.nextBb}"></label></div><button class="primary wide" id="saveBlinds">Guardar configuración</button></div></div>`;
+  const automatic = state.blinds.mode !== "manual";
+  return `<div class="showdown"><div class="sheet"><button class="sheet-back" id="backMenu" aria-label="Volver">←</button><div class="step">Niveles de ciegas</div><h2>Subida de ciegas</h2><p id="blindHelp">${automatic ? "El cronómetro repetirá la subida y aplicará cada nivel al comenzar una nueva mano." : "El nuevo nivel quedará preparado y se aplicará al comenzar la siguiente mano."}</p><label class="mode-field">Modo<select class="select" id="blindMode"><option value="manual" ${automatic ? "" : "selected"}>Manual</option><option value="automatic" ${automatic ? "selected" : ""}>Automático</option></select></label><div class="blind-fields"><label class="auto-only" ${automatic ? "" : "hidden"}>Intervalo (minutos)<input class="input" id="blindMinutes" type="number" inputmode="numeric" min="1" max="180" value="${state.blinds.minutes}"></label><label>Próxima SB<input class="input" id="nextSb" type="number" inputmode="numeric" min="1" value="${state.blinds.nextSb}"></label><label>Próxima BB<input class="input" id="nextBb" type="number" inputmode="numeric" min="2" value="${state.blinds.nextBb}"></label></div><button class="primary wide" id="saveBlinds">Confirmar subida de ciegas</button></div></div>`;
 }
 function championModal() {
   const pieces = Array.from(
@@ -527,25 +539,31 @@ function awardCurrentPot() {
   render();
 }
 function saveBlindConfig() {
-  const enabled = document.querySelector("#blindEnabled").checked,
+  const mode = document.querySelector("#blindMode").value,
     minutes = Math.round(Number(document.querySelector("#blindMinutes").value)),
     nextSb = Math.round(Number(document.querySelector("#nextSb").value)),
     nextBb = Math.round(Number(document.querySelector("#nextBb").value));
-  if (minutes < 1 || minutes > 180) return toast("El intervalo debe ser de 1 a 180 minutos");
+  if (mode === "automatic" && (minutes < 1 || minutes > 180))
+    return toast("El intervalo debe ser de 1 a 180 minutos");
   if (nextSb < 1 || nextBb <= nextSb) return toast("La ciega grande debe ser mayor que la pequeña");
   state.blinds = {
-    enabled,
+    mode,
+    enabled: mode === "automatic",
     minutes,
     nextSb,
     nextBb,
     remaining: minutes * 60,
-    pending: false,
+    pending: mode === "manual",
   };
   state.blindMenu = false;
   state.menuOpen = false;
   startBlindTimer();
   render();
-  toast(enabled ? "Reloj de ciegas activado" : "Subida automática desactivada");
+  toast(
+    mode === "automatic"
+      ? `Subida automática guardada: cada ${minutes} min`
+      : `Ciegas ${nextSb} / ${nextBb} guardadas para la próxima mano`,
+  );
 }
 function bind() {
   document.querySelectorAll("[data-go]").forEach(
@@ -618,6 +636,13 @@ function bind() {
     render();
   });
   document.querySelector("#saveBlinds")?.addEventListener("click", saveBlindConfig);
+  document.querySelector("#blindMode")?.addEventListener("change", (event) => {
+    const automatic = event.target.value === "automatic";
+    document.querySelector(".auto-only").hidden = !automatic;
+    document.querySelector("#blindHelp").textContent = automatic
+      ? "El cronómetro repetirá la subida y aplicará cada nivel al comenzar una nueva mano."
+      : "El nuevo nivel quedará preparado y se aplicará al comenzar la siguiente mano.";
+  });
   document.querySelector("#endGame")?.addEventListener("click", () => {
     state.menuOpen = false;
     state.blinds.enabled = false;
